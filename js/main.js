@@ -1,5 +1,4 @@
 'use strict'
-import _ from 'lodash'
 
 const getRandomNumber = (min = 1, max) => {
   min = Math.round(Math.abs(min));
@@ -14,13 +13,17 @@ const getFloatingRandomNumber = (min, max, floatingPoint) => {
   return Number(randomNumber.toFixed(floatingPoint));
 };
 
-const getRandomArray = (arr) => {
+const getRandomOneArray = (arr) => {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
 const typeOfBuildings = ['palace', 'flat', 'house', 'bungalow'];
 const features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 const checkTime = ['12:00', '13:00', '14:00'];
+
+const getRandomArray = (arr) => {
+  return arr.slice(0, getRandomNumber(0, arr.length))
+};
 
 const PRICE = getRandomNumber(1, 100000);
 const ROOMS = getRandomNumber(1, 4);
@@ -42,16 +45,12 @@ const getArray = function (price, rooms, guests) {
       title: 'Заголовок придуманный самостоятельно',
       address: [location.x, location.y],
       price: price,
-      type: getRandomArray(typeOfBuildings),
+      type: getRandomOneArray(typeOfBuildings),
       rooms: rooms,
       guests: guests,
-      checkin: getRandomArray(checkTime),
-      checkout: getRandomArray(checkTime),
-      features: _.sampleSize(features, [getRandomNumber(undefined, features.length)]),
-      // Берем _.sampleSize из lodash.
-      /* в [number] передаем значение функцию getRandomNumber(), в которой
-      min = по умолчанию - undefined(то есть 1)
-      max = длине передаваемого массива */
+      checkin: getRandomOneArray(checkTime),
+      checkout: getRandomOneArray(checkTime),
+      features: getRandomArray(features),
       description: 'Самостоятельно придуманное описание помещения',
       photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'],
       location: {
@@ -61,4 +60,5 @@ const getArray = function (price, rooms, guests) {
     },
   ]
 };
+
 getArray(PRICE, ROOMS, GUESTS);
