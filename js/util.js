@@ -20,4 +20,27 @@ const getRandomArray = (arr) => {
   return arr.slice(0, getRandomNumber(0, arr.length))
 };
 
-export {getRandomNumber, getRandomOneArray, getRandomArray};
+const getRandomValueObj = function (obj) {
+  const keys = Object.keys(obj);
+  return obj[keys[keys.length * Math.random() << 0]];
+};
+
+const setInnerText = (item, pastedText) => {
+  if (pastedText == null || pastedText == undefined || pastedText == ' ') {
+    item.remove;
+  } else {
+    return item.innerText = pastedText
+  }
+};
+
+// функция не закончена
+// const renderAdvert = () => {
+//   for (let key in data) {
+//     const advertDataItem = data[key];
+//     const advertOffer = advertDataItem.offer;
+//     let renderItem = []
+//     return setInnerText(advertTitle, advertOffer.title)
+//   }
+// }
+
+export { getRandomNumber, getRandomOneArray, getRandomArray, getRandomValueObj, setInnerText};
