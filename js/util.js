@@ -33,6 +33,7 @@ const getRandom = (dataType = 1, max, floatingPoint = 0) => {
     return getRandomNumber(dataType, max, floatingPoint)
   }
 };
+
 /*
 Пример работы функции getRandom()
 getRandom(1, 10)  - получаем число
