@@ -61,11 +61,8 @@ const getRandomData = (count) => {
     array.push(getAdvertData());
   }
   return array;
-}
-
-
+};
 
 const data = getRandomData(10);
-
 
 export {data};

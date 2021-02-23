@@ -55,4 +55,31 @@ const setInnerText = (item, pastedText) => {
   }
 };
 
-export { setInnerText, getRandom };
+const advertForm = document.querySelector('.ad-form');
+const mapFileterForm = document.querySelector('.map__filters');
+
+
+const formDisabled = (form) => {
+  const fromFieldset = form.querySelectorAll('fieldset');
+  form.classList.add(`${form.getAttribute('class')}--disabled`);
+
+  fromFieldset.forEach((fieldset) => {
+    fieldset.setAttribute('disabled', 'disabled');
+  });
+};
+
+const formActive = (form) => {
+  const fromFieldset = form.querySelectorAll('fieldset');
+  form.classList.remove(`${form.classList[0]}--disabled`);
+
+  fromFieldset.forEach((fieldset) => {
+    fieldset.removeAttribute('disabled');
+  });
+};
+
+formDisabled(advertForm);
+formDisabled(mapFileterForm);
+
+
+
+export { setInnerText, getRandom, advertForm, mapFileterForm, formActive };
