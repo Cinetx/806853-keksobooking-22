@@ -1,23 +1,25 @@
 /* global L:readonly */
-import { advertForm, mapFileterForm, formActive } from './util.js';
+import { advertForm, mapFileterForm, formActive } from './form.js';
 import { data } from './data.js';
 import { creatAdvert } from './render-advert.js';
+
+const addressInput = advertForm.querySelector('#address');
+const TOKYO_LOCATION_X = 35.6895000;
+const TOKYO_LOCATION_Y = 139.6917100;
 
 const map = L.map('map-canvas')
   // Перевод страницы в активное состояние.
   .on('load', () => {
     formActive(advertForm);
     formActive(mapFileterForm);
-    // Запрещаем ручное редактирование поля запрещено, однако поле должно быть доступно,
-    // чтобы значение отправлялось на сервер с формой.
-    const addressInput = advertForm.querySelector('#address');
+    // Запрещаем ручное редактирование поля
     addressInput.setAttribute('readonly', 'readonly')
   })
 
   // Находим координаты
   .setView({
-    lat: 35.6895000,
-    lng: 139.6917100,
+    lat: TOKYO_LOCATION_X,
+    lng: TOKYO_LOCATION_Y,
   }, 12);
 
 // Загружаем стороннюю карту и добавляем ее
@@ -29,7 +31,7 @@ L.tileLayer(
 ).addTo(map);
 
 const mainPinIcon = L.icon({
-  iconUrl: '../img/main-pin.svg',
+  iconUrl: '/img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
@@ -55,7 +57,7 @@ data.forEach((item) => {
   const locationY = item.location.y;
 
   const icon = L.icon({
-    iconUrl: 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg',
+    iconUrl: '/img/pin.svg',
     iconSize: [40, 40],
     iconAnchor: [20, 40],
   });
