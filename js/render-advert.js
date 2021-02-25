@@ -1,7 +1,4 @@
-import { data } from './data.js';
 import { setInnerText } from './util.js';
-
-const map = document.querySelector('#map-canvas');
 
 const renderFeatures = (container, featuresList) => {
   container.innerHTML = '';
@@ -47,10 +44,9 @@ const creatAdvert = (dataItem) => {
   return advert
 };
 
+// const renderAdvert = (advertData) => {
+//   map.appendChild(creatAdvert(advertData[0]));
+// };
 
-const renderAdvert = (advertData) => {
-  map.appendChild(creatAdvert(advertData[0]));
-};
-
-renderAdvert(data);
+export { creatAdvert };
 
