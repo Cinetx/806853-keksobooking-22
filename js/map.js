@@ -1,6 +1,6 @@
 /* global L:readonly */
 import { advertForm, mapFileterForm, formActive } from './form.js';
-import { data } from './data.js';
+import { getData } from './api.js';
 import { creatAdvert } from './render-advert.js';
 
 const addressInput = advertForm.querySelector('#address');
@@ -20,7 +20,7 @@ const map = L.map('map-canvas')
   .setView({
     lat: TOKYO_LOCATION_X,
     lng: TOKYO_LOCATION_Y,
-  }, 12);
+  }, 10);
 
 // Загружаем стороннюю карту и добавляем ее
 L.tileLayer(
@@ -31,7 +31,7 @@ L.tileLayer(
 ).addTo(map);
 
 const mainPinIcon = L.icon({
-  iconUrl: '/img/main-pin.svg',
+  iconUrl: 'img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
@@ -39,39 +39,58 @@ const mainPinIcon = L.icon({
 // создаем маркер
 const marker = L.marker(
   {
-    lat: 35.6895000,
-    lng: 139.6917100,
-
+    lat: TOKYO_LOCATION_X,
+    lng: TOKYO_LOCATION_Y,
   },
   {
     draggable: true,
     icon: mainPinIcon,
   },
 );
+
+// Функция возвращение маркера на изначальное место
+const defaultMarkerPosition = () => {
+  marker.setLatLng([TOKYO_LOCATION_X, TOKYO_LOCATION_Y])
+}
+
+// Передача координат в строку адреса
+marker.on('move', () => {
+  addressInput.value = marker.getLatLng();
+})
+
 // добавляем маркер
 marker.addTo(map);
 
-// Создаем много маркеров
-data.forEach((item) => {
-  const locationX = item.location.x;
-  const locationY = item.location.y;
+// Создание маркеров
 
-  const icon = L.icon({
-    iconUrl: '/img/pin.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
+const renderMarker = (data) => {
+  data.forEach((item) => {
+    const locationLat = item.location.lat;
+    const locationLng = item.location.lng;
+
+    const icon = L.icon({
+      iconUrl: 'img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+
+    const marker = L.marker(
+      {
+        lat: locationLat,
+        lng: locationLng,
+      },
+      {
+        icon: icon,
+      },
+    );
+    marker
+      .addTo(map)
+      .bindPopup(creatAdvert(item));
   });
+}
 
-  const marker = L.marker(
-    {
-      lat: locationX,
-      lng: locationY,
-    },
-    {
-      icon: icon,
-    },
-  );
-  marker
-    .addTo(map)
-    .bindPopup(creatAdvert(item));
-});
+// Рендер объявлений
+getData(renderMarker);
+
+export {addressInput, defaultMarkerPosition};
+

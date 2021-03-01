@@ -65,4 +65,4 @@ const getRandomData = (count) => {
 
 const data = getRandomData(10);
 
-export {data};
+export { data };
