@@ -1,6 +1,6 @@
 import { sendData } from './api.js';
 import { addressInput, defaultMarkerPosition } from './map.js'
-
+import { showSuccessMessage, showErrorSendDataMessage, removeMessage, errorMessage } from './message.js';
 const advertForm = document.querySelector('.ad-form');
 const mapFileterForm = document.querySelector('.map__filters');
 const timeIn = advertForm.querySelector('#timein')
@@ -95,30 +95,39 @@ const advertRoomNumber = advertForm.querySelector('#room_number');
 const advertCapacityRoom = advertForm.querySelector('#capacity');
 const optionCapacityRoom = advertCapacityRoom.querySelectorAll('option')
 
-advertRoomNumber.addEventListener('change', () => {
-  optionCapacityRoom.forEach((optionItem) => {
+const roomValues = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  100: [0],
+};
 
-    const valuePlaces = Number(optionItem.value);
-    const valueRoom = Number(advertRoomNumber.value)
-
-    if (valueRoom == 1 && valuePlaces != 1) {
-      optionItem.setAttribute('disabled', 'disabled');
-
-    } else if (valueRoom == 2 && valuePlaces > 2 && valuePlaces == 0) {
-      optionItem.setAttribute('disabled', 'disabled');
-
-    } else if (valueRoom == 3 && valuePlaces > 3 && valuePlaces == 0) {
-      optionItem.setAttribute('disabled', 'disabled');
-
-    } else if (valueRoom == 100 && valuePlaces > 0) {
-      optionItem.setAttribute('disabled', 'disabled');
-
-    }
+const onRoomsNumberSelect = (peopleAmount) => {
+  // Сперва отключаем все options
+  optionCapacityRoom.forEach((option) => {
+    option.disabled = true;
   });
+
+  // Находим количество людей из объекта
+  // Если количество людей совпадает с valu у options, то мы включаем option и выбираем ее
+  roomValues[peopleAmount].forEach((seatsAmount) => {
+    optionCapacityRoom.forEach((option) => {
+      if (Number(option.value) === seatsAmount) {
+        option.disabled = false;
+        option.selected = true;
+      }
+    });
+  });
+};
+
+advertRoomNumber.addEventListener('change', () => {
+  const valueRoom = Number(advertRoomNumber.value)
+  // Передаем value (количесвто комнат)
+  onRoomsNumberSelect(valueRoom);
 });
 
 // Функция очистки формы
-const clearForm = (evt)=>{
+const clearForm = (evt) => {
   evt.preventDefault();
   advertTitle.value = '';
 
@@ -139,9 +148,20 @@ const clearForm = (evt)=>{
 advertForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const formData = new FormData(evt.target);
-  sendData(formData)
-
-  // clearForm();
+  sendData(
+    () => {
+      // Показываем сообщение при удачном соеденении с сервером
+      // После чего очищаем форму
+      showSuccessMessage();
+      clearForm();
+    },
+    ()=>{
+      // Показываем сообщение при неудачном соеденении с сервером
+      // После добавляем функцию удаления сообщения
+      showErrorSendDataMessage();
+      removeMessage(errorMessage);
+    }
+    , formData)
 });
 
 // Очистка формы при нажатии на кнопку

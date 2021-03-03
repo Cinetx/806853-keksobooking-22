@@ -1,6 +1,4 @@
-import {showErrorGetDataMessage, showSuccessMessage, showErrorSendDataMessage, removeMessage, errorMessage} from './message.js';
-// import { clearForm } from './from.js';
-const getData = (renderItem) => {
+const getData = (onSuccess, onError) => {
   fetch('https://22.javascript.pages.academy/keksobooking/data')
     .then((response) => {
       // Если с сервером все нормально, возврашаем response.json
@@ -11,14 +9,14 @@ const getData = (renderItem) => {
       throw new Error ('Ошибка')
     })
     .then((data) => {
-      renderItem(data)
+      onSuccess(data);
     })
     .catch((err)=>{
-      showErrorGetDataMessage(err)
+      onError(err)
     })
 };
 
-const sendData = (data, clearForm) => {
+const sendData = (onSuccess, onError, data) => {
   fetch('https://22.javascript.pages.academy/keksobooking', {
     method: 'POST',
     headers: {
@@ -29,15 +27,12 @@ const sendData = (data, clearForm) => {
   }).then((response)=>{
     if (response.ok) {
       // Сообщение при успехе
-      showSuccessMessage();
-      // Функция очистки при успехе
-      clearForm();
+      onSuccess();
     }
     throw new Error ('Ошибка')
-  }).catch(()=>{
+  }).catch((err)=>{
     // Сообщение при ошибке
-    showErrorSendDataMessage();
-    removeMessage(errorMessage);
+    onError(err)
   })
 };
 

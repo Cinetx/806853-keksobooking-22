@@ -2,10 +2,13 @@
 import { advertForm, mapFileterForm, formActive } from './form.js';
 import { getData } from './api.js';
 import { creatAdvert } from './render-advert.js';
+import {showErrorGetDataMessage} from './message.js';
 
 const addressInput = advertForm.querySelector('#address');
-const TOKYO_LOCATION_X = 35.6895000;
-const TOKYO_LOCATION_Y = 139.6917100;
+const TokyoLocation = {
+  X: 35.6895000,
+  Y: 139.6917100,
+}
 
 const map = L.map('map-canvas')
   // Перевод страницы в активное состояние.
@@ -18,8 +21,8 @@ const map = L.map('map-canvas')
 
   // Находим координаты
   .setView({
-    lat: TOKYO_LOCATION_X,
-    lng: TOKYO_LOCATION_Y,
+    lat: TokyoLocation.X,
+    lng: TokyoLocation.Y,
   }, 10);
 
 // Загружаем стороннюю карту и добавляем ее
@@ -39,8 +42,8 @@ const mainPinIcon = L.icon({
 // создаем маркер
 const marker = L.marker(
   {
-    lat: TOKYO_LOCATION_X,
-    lng: TOKYO_LOCATION_Y,
+    lat: TokyoLocation.X,
+    lng: TokyoLocation.Y,
   },
   {
     draggable: true,
@@ -50,7 +53,7 @@ const marker = L.marker(
 
 // Функция возвращение маркера на изначальное место
 const defaultMarkerPosition = () => {
-  marker.setLatLng([TOKYO_LOCATION_X, TOKYO_LOCATION_Y])
+  marker.setLatLng([TokyoLocation.X, TokyoLocation.Y])
 }
 
 // Передача координат в строку адреса
@@ -90,7 +93,7 @@ const renderMarker = (data) => {
 }
 
 // Рендер объявлений
-getData(renderMarker);
+getData(renderMarker, showErrorGetDataMessage);
 
 export {addressInput, defaultMarkerPosition};
 
