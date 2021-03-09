@@ -1,3 +1,5 @@
 import './data.js';
 import './render-advert.js';
 import './map.js';
+import './card.js';
+import './filter.js';

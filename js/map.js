@@ -1,8 +1,6 @@
 /* global L:readonly */
 import { advertForm, mapFileterForm, formActive } from './form.js';
-import { getData } from './api.js';
 import { creatAdvert } from './render-advert.js';
-import {showErrorGetDataMessage} from './message.js';
 
 const addressInput = advertForm.querySelector('#address');
 const TokyoLocation = {
@@ -17,6 +15,7 @@ const map = L.map('map-canvas')
     formActive(mapFileterForm);
     // Запрещаем ручное редактирование поля
     addressInput.setAttribute('readonly', 'readonly')
+    addressInput.value = TokyoLocation.X + ' ' + TokyoLocation.Y;
   })
 
   // Находим координаты
@@ -40,7 +39,7 @@ const mainPinIcon = L.icon({
 });
 
 // создаем маркер
-const marker = L.marker(
+const mainMarker = L.marker(
   {
     lat: TokyoLocation.X,
     lng: TokyoLocation.Y,
@@ -53,24 +52,29 @@ const marker = L.marker(
 
 // Функция возвращение маркера на изначальное место
 const defaultMarkerPosition = () => {
-  marker.setLatLng([TokyoLocation.X, TokyoLocation.Y])
+  mainMarker.setLatLng([TokyoLocation.X, TokyoLocation.Y])
 }
 
 // Передача координат в строку адреса
-marker.on('move', () => {
-  addressInput.value = marker.getLatLng();
+mainMarker.on('move', () => {
+  addressInput.value = mainMarker.getLatLng().lat.toFixed(2) + ' ' + mainMarker.getLatLng().lng.toFixed(2)
 })
 
 // добавляем маркер
-marker.addTo(map);
+mainMarker.addTo(map);
 
 // Создание маркеров
+// Создаем слой маркеров
+const markers = L.layerGroup().addTo(map);
 
 const renderMarker = (data) => {
+  // Чистим слой маркеров перед каждым рендером
+  markers.clearLayers()
   data.forEach((item) => {
     const locationLat = item.location.lat;
     const locationLng = item.location.lng;
 
+    // Создание иконки
     const icon = L.icon({
       iconUrl: 'img/pin.svg',
       iconSize: [40, 40],
@@ -87,13 +91,10 @@ const renderMarker = (data) => {
       },
     );
     marker
-      .addTo(map)
+      .addTo(markers)
       .bindPopup(creatAdvert(item));
   });
 }
 
-// Рендер объявлений
-getData(renderMarker, showErrorGetDataMessage);
-
-export {addressInput, defaultMarkerPosition};
+export { addressInput, defaultMarkerPosition, renderMarker };
 

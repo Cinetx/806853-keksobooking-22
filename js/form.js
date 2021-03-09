@@ -1,6 +1,6 @@
 import { sendData } from './api.js';
 import { addressInput, defaultMarkerPosition } from './map.js'
-import { showSuccessMessage, showErrorSendDataMessage, removeMessage, errorMessage } from './message.js';
+import { showSuccessMessage, showErrorSendDataMessage, removeMessage, errorMessage, successMessage } from './message.js';
 const advertForm = document.querySelector('.ad-form');
 const mapFileterForm = document.querySelector('.map__filters');
 const timeIn = advertForm.querySelector('#timein')
@@ -127,8 +127,7 @@ advertRoomNumber.addEventListener('change', () => {
 });
 
 // Функция очистки формы
-const clearForm = (evt) => {
-  evt.preventDefault();
+const clearForm = () => {
   advertTitle.value = '';
 
   timeIn.value = '12:00';
@@ -145,29 +144,34 @@ const clearForm = (evt) => {
   defaultMarkerPosition();
 };
 
-advertForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  const formData = new FormData(evt.target);
-  sendData(
-    () => {
-      // Показываем сообщение при удачном соеденении с сервером
-      // После чего очищаем форму
-      showSuccessMessage();
-      clearForm();
-    },
-    ()=>{
-      // Показываем сообщение при неудачном соеденении с сервером
-      // После добавляем функцию удаления сообщения
-      showErrorSendDataMessage();
-      removeMessage(errorMessage);
-    }
-    , formData)
-});
+const sendAdvertForm = () => {
+  advertForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const formData = new FormData(evt.target);
+    sendData(
+      () => {
+        // Показываем сообщение при удачном соеденении с сервером
+        // После чего очищаем форму
+        showSuccessMessage();
+        removeMessage(successMessage);
+        clearForm();
+      },
+      () => {
+        // Показываем сообщение при неудачном соеденении с сервером
+        // После добавляем функцию удаления сообщения
+        showErrorSendDataMessage();
+        removeMessage(errorMessage);
+      }
+      , formData)
+  });
+}
+sendAdvertForm();
 
 // Очистка формы при нажатии на кнопку
 const advertResetButton = advertForm.querySelector('.ad-form__reset');
 advertResetButton.addEventListener('click', (evt) => {
-  clearForm(evt);
+  evt.preventDefault();
+  clearForm();
 });
 
 export { advertForm, mapFileterForm, formActive, clearForm };
