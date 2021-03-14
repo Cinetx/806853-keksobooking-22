@@ -43,12 +43,10 @@ formDisabled(mapFileterForm);
 
 // функция установки 'Цены за ночь', в зависимости от выбранного типа жилья
 const renderPrice = () => {
-  housingType.addEventListener('change', () => {
-    advertPriceInput.min = priceType[housingType.value];
-    advertPriceInput.placeholder = priceType[housingType.value];
-  });
+  advertPriceInput.min = priceType[housingType.value];
+  advertPriceInput.placeholder = priceType[housingType.value];
 }
-renderPrice();
+housingType.addEventListener('change', renderPrice())
 
 // функция синхронизации Время заезда и выезда
 const renderTimeCheck = (checkIn, checkOut) => {
@@ -102,6 +100,7 @@ const roomValues = {
   100: [0],
 };
 
+// Выбор количества мест в зависимости от выбранного количества комнат
 const onRoomsNumberSelect = (peopleAmount) => {
   // Сперва отключаем все options
   optionCapacityRoom.forEach((option) => {
@@ -120,11 +119,11 @@ const onRoomsNumberSelect = (peopleAmount) => {
   });
 };
 
-advertRoomNumber.addEventListener('change', () => {
+const renderRoomsNumber = () => {
   const valueRoom = Number(advertRoomNumber.value)
-  // Передаем value (количесвто комнат)
   onRoomsNumberSelect(valueRoom);
-});
+}
+advertRoomNumber.addEventListener('change', renderRoomsNumber());
 
 // Функция очистки формы
 const clearForm = () => {

@@ -8,6 +8,7 @@ const TokyoLocation = {
   Y: 139.6917100,
 }
 
+
 const map = L.map('map-canvas')
   // Перевод страницы в активное состояние.
   .on('load', () => {
