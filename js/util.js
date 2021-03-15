@@ -55,4 +55,14 @@ const setInnerText = (item, pastedText) => {
   }
 };
 
-export { setInnerText, getRandom };
+const debounceTime = 1500;
+const debounce = (fn, ms) => {
+  let timeout;
+  return function () {
+    const fnCall = () => { fn.apply(this, arguments) }
+    clearTimeout(timeout);
+    timeout = setTimeout(fnCall, ms);
+  };
+}
+
+export { setInnerText, getRandom, debounce, debounceTime };

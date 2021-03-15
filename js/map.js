@@ -1,11 +1,13 @@
 /* global L:readonly */
 import { advertForm, mapFileterForm, formActive } from './form.js';
-import { data } from './data.js';
 import { creatAdvert } from './render-advert.js';
 
 const addressInput = advertForm.querySelector('#address');
-const TOKYO_LOCATION_X = 35.6895000;
-const TOKYO_LOCATION_Y = 139.6917100;
+const TokyoLocation = {
+  X: 35.6895000,
+  Y: 139.6917100,
+}
+
 
 const map = L.map('map-canvas')
   // Перевод страницы в активное состояние.
@@ -14,13 +16,14 @@ const map = L.map('map-canvas')
     formActive(mapFileterForm);
     // Запрещаем ручное редактирование поля
     addressInput.setAttribute('readonly', 'readonly')
+    addressInput.value = TokyoLocation.X + ' ' + TokyoLocation.Y;
   })
 
   // Находим координаты
   .setView({
-    lat: TOKYO_LOCATION_X,
-    lng: TOKYO_LOCATION_Y,
-  }, 12);
+    lat: TokyoLocation.X,
+    lng: TokyoLocation.Y,
+  }, 10);
 
 // Загружаем стороннюю карту и добавляем ее
 L.tileLayer(
@@ -31,47 +34,68 @@ L.tileLayer(
 ).addTo(map);
 
 const mainPinIcon = L.icon({
-  iconUrl: '/img/main-pin.svg',
+  iconUrl: 'img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
 
 // создаем маркер
-const marker = L.marker(
+const mainMarker = L.marker(
   {
-    lat: 35.6895000,
-    lng: 139.6917100,
-
+    lat: TokyoLocation.X,
+    lng: TokyoLocation.Y,
   },
   {
     draggable: true,
     icon: mainPinIcon,
   },
 );
+
+// Функция возвращение маркера на изначальное место
+const defaultMarkerPosition = () => {
+  mainMarker.setLatLng([TokyoLocation.X, TokyoLocation.Y])
+}
+
+// Передача координат в строку адреса
+mainMarker.on('move', () => {
+  addressInput.value = mainMarker.getLatLng().lat.toFixed(2) + ' ' + mainMarker.getLatLng().lng.toFixed(2)
+})
+
 // добавляем маркер
-marker.addTo(map);
+mainMarker.addTo(map);
 
-// Создаем много маркеров
-data.forEach((item) => {
-  const locationX = item.location.x;
-  const locationY = item.location.y;
+// Создание маркеров
+// Создаем слой маркеров
+const markers = L.layerGroup().addTo(map);
 
-  const icon = L.icon({
-    iconUrl: '/img/pin.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
+const renderMarker = (data) => {
+  // Чистим слой маркеров перед каждым рендером
+  markers.clearLayers()
+  data.forEach((item) => {
+    const locationLat = item.location.lat;
+    const locationLng = item.location.lng;
+
+    // Создание иконки
+    const icon = L.icon({
+      iconUrl: 'img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+
+    const marker = L.marker(
+      {
+        lat: locationLat,
+        lng: locationLng,
+      },
+      {
+        icon: icon,
+      },
+    );
+    marker
+      .addTo(markers)
+      .bindPopup(creatAdvert(item));
   });
+}
 
-  const marker = L.marker(
-    {
-      lat: locationX,
-      lng: locationY,
-    },
-    {
-      icon: icon,
-    },
-  );
-  marker
-    .addTo(map)
-    .bindPopup(creatAdvert(item));
-});
+export { addressInput, defaultMarkerPosition, renderMarker };
+

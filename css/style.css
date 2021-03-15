@@ -68,6 +68,7 @@ fieldset {
 }
 
 .map {
+  z-index: 1;
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
