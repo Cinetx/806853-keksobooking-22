@@ -3,4 +3,3 @@ import './map.js';
 import './card.js';
 import './filter.js';
 import './photo.js';
-import 'leaflet/dist/leaflet.css';
