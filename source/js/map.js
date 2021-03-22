@@ -1,4 +1,4 @@
-/* global L:readonly */
+import L from 'leaflet';
 import { advertForm, mapFileterForm, formActive } from './form.js';
 import { creatAdvert } from './render-advert.js';
 

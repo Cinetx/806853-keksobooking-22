@@ -1,6 +1,7 @@
 import { sendData } from './api.js';
 import { addressInput, defaultMarkerPosition } from './map.js'
 import { showSuccessMessage, showErrorSendDataMessage, removeMessage, errorMessage, successMessage } from './message.js';
+import { avatarChooser, avatarPreview, photoChooser, photoPreview } from './photo.js';
 const advertForm = document.querySelector('.ad-form');
 const mapFileterForm = document.querySelector('.map__filters');
 const timeIn = advertForm.querySelector('#timein')
@@ -141,6 +142,11 @@ const clearForm = () => {
   addressInput.value = '';
 
   defaultMarkerPosition();
+  avatarChooser.value = '';
+  avatarPreview.src = 'img/muffin-grey.svg';
+
+  photoChooser.value = '';
+  photoPreview.src = 'img/muffin-grey.svg';
 };
 
 const sendAdvertForm = () => {
