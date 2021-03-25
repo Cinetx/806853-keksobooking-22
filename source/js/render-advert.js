@@ -1,7 +1,7 @@
 import { setInnerText } from './util.js';
 
 const renderFeatures = (container, featuresList) => {
-  container.innerHTML = '';
+  container.textContent = '';
   featuresList.forEach((item) => {
     const feature = document.createElement('li');
     feature.classList.add('popup__feature', `popup__feature--${item}`)
@@ -11,7 +11,7 @@ const renderFeatures = (container, featuresList) => {
 };
 
 const renderPhoto = (container, photo, photoList) => {
-  container.innerHTML = '';
+  container.textContent = '';
   photoList.forEach((photoLink) => {
     const advertPhotoClone = photo.cloneNode(true);
     advertPhotoClone.src = photoLink;
@@ -43,10 +43,6 @@ const creatAdvert = (dataItem) => {
 
   return advert
 };
-
-// const renderAdvert = (advertData) => {
-//   map.appendChild(creatAdvert(advertData[0]));
-// };
 
 export { creatAdvert };
 

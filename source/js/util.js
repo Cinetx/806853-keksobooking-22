@@ -1,19 +1,27 @@
+const DEBOUNCE_TIME = 500;
+
 const setInnerText = (item, pastedText) => {
-  if (pastedText == null || pastedText == undefined || pastedText == ' ') {
+  if (pastedText === null || pastedText === undefined || pastedText === ' ') {
     item.remove;
   } else {
     return item.innerText = pastedText
   }
 };
 
-const debounceTime = 500;
-const debounce = (fn, ms) => {
+const debounce = (func, wait) => {
   let timeout;
-  return function () {
-    const fnCall = () => { fn.apply(this, arguments) }
-    clearTimeout(timeout);
-    timeout = setTimeout(fnCall, ms);
-  };
-}
 
-export { setInnerText, debounce, debounceTime };
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+
+
+export { setInnerText, debounce, DEBOUNCE_TIME };
+

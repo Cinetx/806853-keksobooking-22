@@ -1,31 +1,41 @@
 import L from 'leaflet';
-import { advertForm, mapFileterForm, formActive } from './form.js';
+import { advertFormElement, mapFileterFormElement, formActive } from './form.js';
 import { creatAdvert } from './render-advert.js';
 
-const addressInput = advertForm.querySelector('#address');
-const TokyoLocation = {
-  X: 35.6895000,
-  Y: 139.6917100,
+const TokyosLocation = {
+  X: 35.68,
+  Y: 139.69,
 }
+const mainPinStyle = {
+  url: 'img/main-pin.svg',
+  size: [52, 52],
+  anchor: [26, 52],
+};
+const pinStyle = {
+  url: 'img/pin.svg',
+  size: [40, 40],
+  anchor: [20, 40],
+}
+const LAT_LNG_FLOATING_POINT = 2;
+const DISTANCE_MAP = 10;
 
+const addressInputElement = advertFormElement.querySelector('#address');
 
 const map = L.map('map-canvas')
-  // Перевод страницы в активное состояние.
   .on('load', () => {
-    formActive(advertForm);
-    formActive(mapFileterForm);
-    // Запрещаем ручное редактирование поля
-    addressInput.setAttribute('readonly', 'readonly')
-    addressInput.value = TokyoLocation.X + ' ' + TokyoLocation.Y;
+    formActive(advertFormElement);
+    formActive(mapFileterFormElement);
+
+    addressInputElement.setAttribute('readonly', 'readonly')
+    addressInputElement.value = TokyosLocation.X + ' ' + TokyosLocation.Y;
   })
 
-  // Находим координаты
-  .setView({
-    lat: TokyoLocation.X,
-    lng: TokyoLocation.Y,
-  }, 10);
 
-// Загружаем стороннюю карту и добавляем ее
+  .setView({
+    lat: TokyosLocation.X,
+    lng: TokyosLocation.Y,
+  }, DISTANCE_MAP);
+
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   {
@@ -33,17 +43,17 @@ L.tileLayer(
   },
 ).addTo(map);
 
+
 const mainPinIcon = L.icon({
-  iconUrl: 'img/main-pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
+  iconUrl: mainPinStyle.url,
+  iconSize: mainPinStyle.size,
+  iconAnchor: mainPinStyle.anchor,
 });
 
-// создаем маркер
 const mainMarker = L.marker(
   {
-    lat: TokyoLocation.X,
-    lng: TokyoLocation.Y,
+    lat: TokyosLocation.X,
+    lng: TokyosLocation.Y,
   },
   {
     draggable: true,
@@ -51,35 +61,28 @@ const mainMarker = L.marker(
   },
 );
 
-// Функция возвращение маркера на изначальное место
-const defaultMarkerPosition = () => {
-  mainMarker.setLatLng([TokyoLocation.X, TokyoLocation.Y])
+const getDefaultMarkerPosition = () => {
+  mainMarker.setLatLng([TokyosLocation.X, TokyosLocation.Y])
 }
 
-// Передача координат в строку адреса
 mainMarker.on('move', () => {
-  addressInput.value = mainMarker.getLatLng().lat.toFixed(2) + ' ' + mainMarker.getLatLng().lng.toFixed(2)
+  addressInputElement.value = mainMarker.getLatLng().lat.toFixed(LAT_LNG_FLOATING_POINT) + ' ' + mainMarker.getLatLng().lng.toFixed(LAT_LNG_FLOATING_POINT)
 })
 
-// добавляем маркер
 mainMarker.addTo(map);
 
-// Создание маркеров
-// Создаем слой маркеров
 const markers = L.layerGroup().addTo(map);
 
 const renderMarker = (data) => {
-  // Чистим слой маркеров перед каждым рендером
   markers.clearLayers()
   data.forEach((item) => {
     const locationLat = item.location.lat;
     const locationLng = item.location.lng;
 
-    // Создание иконки
     const icon = L.icon({
-      iconUrl: 'img/pin.svg',
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
+      iconUrl: pinStyle.url,
+      iconSize: pinStyle.size,
+      iconAnchor: pinStyle.anchor,
     });
 
     const marker = L.marker(
@@ -97,5 +100,5 @@ const renderMarker = (data) => {
   });
 }
 
-export { addressInput, defaultMarkerPosition, renderMarker };
+export { addressInputElement, getDefaultMarkerPosition, renderMarker };
 

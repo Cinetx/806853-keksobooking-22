@@ -1,20 +1,15 @@
-// Аватарка пользователя должна загружаться через поле загрузки файлов в блоке
-// .ad-form__field и показываться в блоке .ad-form-header__preview.
-const avatarChooser = document.querySelector('.ad-form__field input[type=file]');
-const avatarPreview = document.querySelector('.ad-form-header__preview img');
-const photoChooser = document.querySelector('.ad-form__upload input[type=file]');
-const photoPreview = document.querySelector('.ad-form__photo img');
+const avatarChooserElement = document.querySelector('.ad-form__field input[type=file]');
+const avatarPreviewElement = document.querySelector('.ad-form-header__preview img');
+const photoChooserElement = document.querySelector('.ad-form__upload input[type=file]');
+const photoPreviewElement = document.querySelector('.ad-form__photo img');
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-
 
 const onPhotoChange = (chooser, renderBlock, renderCallback) => {
   chooser.addEventListener('change', () => {
-    // Находим файл
 
     const file = chooser.files[0];
     const fileName = file.name.toLowerCase();
 
-    // Проверяем совпадение файла
     const matches = FILE_TYPES.some((it) => {
       return fileName.endsWith(it);
     });
@@ -35,7 +30,7 @@ const renderPhoto = (matches, file, renderBlock) => {
   }
 };
 
-onPhotoChange(avatarChooser, avatarPreview, renderPhoto);
-onPhotoChange(photoChooser, photoPreview, renderPhoto)
+onPhotoChange(avatarChooserElement, avatarPreviewElement, renderPhoto);
+onPhotoChange(photoChooserElement, photoPreviewElement, renderPhoto)
 
-export { avatarChooser, avatarPreview, photoChooser, photoPreview };
+export { avatarChooserElement, avatarPreviewElement, photoChooserElement, photoPreviewElement };

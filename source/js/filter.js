@@ -1,46 +1,48 @@
 import { renderMarker } from './map.js';
-import { debounce, debounceTime } from './util.js';
+import { debounce, DEBOUNCE_TIME } from './util.js';
 
-const mapFilters = document.querySelector('.map__filters');
-const housingType = mapFilters.querySelector('#housing-type');
-const housingPrice = mapFilters.querySelector('#housing-price');
-const housingRooms = mapFilters.querySelector('#housing-rooms');
-const housingGuests = mapFilters.querySelector('#housing-guests');
-
-const HousingPrice = {
+const HousingPrices = {
   low: 10000,
   high: 50000,
 }
 
+const mapFiltersElemet = document.querySelector('.map__filters');
+const housingTypeElemet = mapFiltersElemet.querySelector('#housing-type');
+const housingPriceElemet = mapFiltersElemet.querySelector('#housing-price');
+const housingRoomsElemet = mapFiltersElemet.querySelector('#housing-rooms');
+const housingGuestsElemet = mapFiltersElemet.querySelector('#housing-guests');
+
+
+
 const checkType = (advert) => {
-  return housingType.value == 'any' ? true : housingType.value == advert.offer.type;
+  return housingTypeElemet.value === 'any' ? true : housingTypeElemet.value === advert.offer.type;
 }
 
 const checkPrice = (advert) => {
-  switch (housingPrice.value) {
+  switch (housingPriceElemet.value) {
     case 'any':
       return true;
     case 'low':
-      return advert.offer.price < HousingPrice.low;
+      return advert.offer.price < HousingPrices.low;
     case 'middle':
-      return advert.offer.price >= HousingPrice.low && advert.offer.price < HousingPrice.high;
+      return advert.offer.price >= HousingPrices.low && advert.offer.price < HousingPrices.high;
     case 'high':
-      return advert.offer.price >= HousingPrice.high;
+      return advert.offer.price >= HousingPrices.high;
     default:
       return false;
   }
 };
 
 const checkRooms = (advert) => {
-  return housingRooms.value == 'any' ? true : housingRooms.value == advert.offer.rooms;
+  return housingRoomsElemet.value === 'any' ? true : housingRoomsElemet.value === advert.offer.rooms;
 }
 
 const checkGuests = (advert) => {
-  return housingGuests.value == 'any' ? true : housingGuests.value == advert.offer.guests;
+  return housingGuestsElemet.value === 'any' ? true : housingGuestsElemet.value === advert.offer.guests;
 }
 
 const checkFeatures = (advert) => {
-  const checkedFeatures = mapFilters.querySelectorAll('.map__checkbox:checked');
+  const checkedFeatures = mapFiltersElemet.querySelectorAll('.map__checkbox:checked');
   let count = 0;
   checkedFeatures.forEach((feature) => {
     if (advert.offer.features.includes(feature.value))
@@ -50,8 +52,6 @@ const checkFeatures = (advert) => {
   return count === checkedFeatures.length;
 }
 
-
-// Получаем фильтруемые данные
 const getFilteredAdvert = (data) => {
   return data.filter((advert) => {
     return (
@@ -64,21 +64,21 @@ const getFilteredAdvert = (data) => {
   })
 };
 
-// Рендер при изменении фильтра
-let setFilterChange = (data) => {
+const setFilterChange = (data) => {
   const filteredAdverts = getFilteredAdvert(data);
   renderMarker(filteredAdverts);
-  onFilterChange(data);
-};
-
-// Действие при выборе фильтра
-const onFilterChange = (data) => {
-  mapFilters.addEventListener('change', () => {
-    setFilterChange = debounce(onFilterChange, debounceTime);
-    onFilterChange(data);
-    const filteredAdverts = getFilteredAdvert(data);
-    renderMarker(filteredAdverts);
+  mapFiltersElemet.addEventListener('change', () => {
+    debounceOnFilterChange(data);
   })
 };
 
-export { getFilteredAdvert, setFilterChange, onFilterChange };
+const onFilterChange = (data) => {
+  const filteredAdverts = getFilteredAdvert(data);
+  renderMarker(filteredAdverts);
+};
+
+const debounceOnFilterChange = debounce((data) => {
+  onFilterChange(data)
+}, DEBOUNCE_TIME);
+
+export { setFilterChange };

@@ -1,17 +1,32 @@
-
-const mainContainer = document.querySelector('main');
 const ERROR_MESSAGE_TITME = 3000;
+const ErrorMessageStyle = {
+  elemet: 'div',
+  zIndex: 100,
+  position: 'absolute',
+  padding: '10px',
+  left: 0,
+  right: 0,
+  top: 0,
+  width: '100%',
+  textAlign: 'center',
+  backgroundColor: 'red',
+  color: 'white',
+  fontSize: '30px',
+}
 
-// Функция показа сообщения об отправки
-const templateSuccess = document.querySelector('#success').content;
-const successContainer = templateSuccess.cloneNode(true);
+const mainContainerElement = document.querySelector('main');
+const templateSuccessElement = document.querySelector('#success').content;
+const successContainerElement = templateSuccessElement.cloneNode(true);
+const templateErrorElement = document.querySelector('#error').content;
+const errorContainerElement = templateErrorElement.cloneNode(true);
+let errorMessage;
 let successMessage;
+
 const showSuccessMessage = () => {
-  mainContainer.appendChild(successContainer);
-  return successMessage = mainContainer.querySelector('.success');
+  mainContainerElement.appendChild(successContainerElement);
+  return successMessage = mainContainerElement.querySelector('.success');
 };
 
-// Функция удаления всплывающих сообщений
 const removeMessage = (message) => {
   document.addEventListener('keydown', (evt) => {
 
@@ -26,34 +41,30 @@ const removeMessage = (message) => {
   });
 }
 
-// Функция показа сообщения об ошибки
+
 const showErrorGetDataMessage = (message) => {
-  const errorContainer = document.createElement('div')
-  errorContainer.style.zIndex = 100;
-  errorContainer.style.position = 'absolute';
-  errorContainer.style.padding = '10px'
-  errorContainer.style.left = 0;
-  errorContainer.style.top = 0;
-  errorContainer.style.right = 0;
-  errorContainer.style.width = '100%';
-  errorContainer.style.textAlign = 'center'
-  errorContainer.style.backgroundColor = 'red'
-  errorContainer.style.color = 'white'
-  errorContainer.style.fontSize = '30px';
-  errorContainer.textContent = message;
-  document.body.append(errorContainer);
+  const errorContainerElement = document.createElement(ErrorMessageStyle.elemet);
+  errorContainerElement.style.zIndex = ErrorMessageStyle.zIndex;
+  errorContainerElement.style.position = ErrorMessageStyle.position;
+  errorContainerElement.style.padding = ErrorMessageStyle.padding;
+  errorContainerElement.style.left = ErrorMessageStyle.left;
+  errorContainerElement.style.top = ErrorMessageStyle.top;
+  errorContainerElement.style.right = ErrorMessageStyle.right;
+  errorContainerElement.style.width = ErrorMessageStyle.width;
+  errorContainerElement.style.textAlign = ErrorMessageStyle.textAlign;
+  errorContainerElement.style.backgroundColor = ErrorMessageStyle.backgroundColor;
+  errorContainerElement.style.color = ErrorMessageStyle.color;
+  errorContainerElement.style.fontSize = ErrorMessageStyle.fontSize;
+  errorContainerElement.textContent = message;
+  document.body.append(errorContainerElement);
   setTimeout(() => {
-    errorContainer.remove();
+    errorContainerElement.remove();
   }, ERROR_MESSAGE_TITME);
 };
 
-
-const templateError = document.querySelector('#error').content;
-const errorContainer = templateError.cloneNode(true);
-let errorMessage;
-const showErrorSendDataMessage = ()=> {
-  mainContainer.appendChild(errorContainer)
-  return errorMessage = mainContainer.querySelector('.error')
+const showErrorSendDataMessage = () => {
+  mainContainerElement.appendChild(errorContainerElement)
+  return errorMessage = mainContainerElement.querySelector('.error')
 }
 
 export { showSuccessMessage, removeMessage, showErrorGetDataMessage, showErrorSendDataMessage, successMessage, errorMessage };
