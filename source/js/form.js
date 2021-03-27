@@ -1,6 +1,6 @@
 import { sendData } from './api.js';
-import { addressInputElement, getDefaultMarkerPosition } from './map.js'
-import { showSuccessMessage, showErrorSendDataMessage, removeMessage, errorMessage, successMessage } from './message.js';
+import { getDefaultMarkerPosition } from './map.js'
+import { showSuccessMessage, showErrorSendDataMessage} from './message.js';
 import { avatarChooserElement, avatarPreviewElement, photoChooserElement, photoPreviewElement } from './photo.js';
 
 const MIN_TITLE_LENGTH = 30;
@@ -19,16 +19,9 @@ const RoomsValue = {
 };
 
 const DefaultFormOptions = {
-  title: '',
-  time: '12:00',
-  housingType: 'flat',
-  room: '1',
-  price: '',
-  address: '',
   choser: '',
   photoURL: 'img/muffin-grey.svg',
 }
-
 
 const advertFormElement = document.querySelector('.ad-form');
 const mapFileterFormElement = document.querySelector('.map__filters');
@@ -40,14 +33,9 @@ const advertPriceInputElement = advertFormElement.querySelector('#price');
 const advertRoomNumberElement = advertFormElement.querySelector('#room_number');
 const advertCapacityRoomElement = advertFormElement.querySelector('#capacity');
 const optionCapacityRoomElement = advertCapacityRoomElement.querySelectorAll('option');
-const featureElement = advertFormElement.querySelectorAll('input[type=checkbox]');
+const advertResetButton = advertFormElement.querySelector('.ad-form__reset');
 
 
-const clearFeature = () => {
-  featureElement.forEach((item) => {
-    item.checked = false;
-  });
-};
 const formDisabled = (form) => {
   const fromFieldset = form.querySelectorAll('fieldset');
   form.classList.add(`${form.getAttribute('class')}--disabled`);
@@ -147,52 +135,36 @@ advertRoomNumberElement.addEventListener('change', onChangeRoom);
 
 
 const clearForm = () => {
-  advertTitleElement.value = DefaultFormOptions.title;
-
-  timeInElement.value = DefaultFormOptions.time;
-  renderTimeCheck(timeInElement, timeOutElement);
-
-  housingTypeElement.value = DefaultFormOptions.housingType;
-  renderPrice();
-  clearFeature();
-
-  advertRoomNumberElement.value = DefaultFormOptions.room;
-  advertPriceInputElement.value = DefaultFormOptions.price;
-
-  addressInputElement.value = DefaultFormOptions.address;
-
-  getDefaultMarkerPosition();
   avatarChooserElement.value = DefaultFormOptions.choser;
   avatarPreviewElement.src = DefaultFormOptions.photoURL;
 
   photoChooserElement.value = DefaultFormOptions.choser;
   photoPreviewElement.src = DefaultFormOptions.photoURL;
+  advertFormElement.reset();
+  renderRoomsNumber();
+  getDefaultMarkerPosition();
+
 };
 
-const sendAdvertForm = () => {
-  advertFormElement.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    const formData = new FormData(evt.target);
-    sendData(
-      () => {
-        showSuccessMessage();
-        removeMessage(successMessage);
-        clearForm();
-      },
-      () => {
-        showErrorSendDataMessage();
-        removeMessage(errorMessage);
-      }
-      , formData)
-  });
+const onClickSubmitForm = (evt) => {
+  evt.preventDefault();
+  const formData = new FormData(evt.target);
+  sendData(
+    () => {
+      showSuccessMessage();
+      clearForm();
+    },
+    () => {
+      showErrorSendDataMessage();
+    }
+    , formData)
 }
-sendAdvertForm();
 
-const advertResetButton = advertFormElement.querySelector('.ad-form__reset');
+advertFormElement.addEventListener('submit', onClickSubmitForm);
+
 advertResetButton.addEventListener('click', (evt) => {
   evt.preventDefault();
   clearForm();
-  renderRoomsNumber();
 });
 
 export { advertFormElement, mapFileterFormElement, formActive, clearForm };

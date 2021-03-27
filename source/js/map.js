@@ -100,5 +100,5 @@ const renderMarker = (data) => {
   });
 }
 
-export { addressInputElement, getDefaultMarkerPosition, renderMarker };
+export { getDefaultMarkerPosition, renderMarker };
 

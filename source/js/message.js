@@ -15,32 +15,31 @@ const ErrorMessageStyle = {
 }
 
 const mainContainerElement = document.querySelector('main');
-const templateSuccessElement = document.querySelector('#success').content;
-const successContainerElement = templateSuccessElement.cloneNode(true);
-const templateErrorElement = document.querySelector('#error').content;
-const errorContainerElement = templateErrorElement.cloneNode(true);
-let errorMessage;
-let successMessage;
+const templateSuccessElement = document.querySelector('#success').content.querySelector('.success');
+const templateErrorElement = document.querySelector('#error').content.querySelector('.error')
 
 const showSuccessMessage = () => {
-  mainContainerElement.appendChild(successContainerElement);
-  return successMessage = mainContainerElement.querySelector('.success');
+  const message = templateSuccessElement.cloneNode(true);
+  mainContainerElement.appendChild(message);
+
+  removeMessage(message)
 };
 
 const removeMessage = (message) => {
   document.addEventListener('keydown', (evt) => {
-
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       message.remove()
     }
-  });
+  }, { once: true },
+  )
   document.addEventListener('click', (evt) => {
     evt.preventDefault();
     message.remove()
-  });
-}
+  }, { once: true },
+  );
 
+}
 
 const showErrorGetDataMessage = (message) => {
   const errorContainerElement = document.createElement(ErrorMessageStyle.elemet);
@@ -63,8 +62,10 @@ const showErrorGetDataMessage = (message) => {
 };
 
 const showErrorSendDataMessage = () => {
-  mainContainerElement.appendChild(errorContainerElement)
-  return errorMessage = mainContainerElement.querySelector('.error')
+  const message = templateErrorElement.cloneNode(true);
+  mainContainerElement.appendChild(message);
+
+  removeMessage(message)
 }
 
-export { showSuccessMessage, removeMessage, showErrorGetDataMessage, showErrorSendDataMessage, successMessage, errorMessage };
+export { showSuccessMessage, showErrorGetDataMessage, showErrorSendDataMessage};
