@@ -45,12 +45,13 @@ const checkFeatures = (advert) => {
   const checkedFeatures = mapFiltersElemet.querySelectorAll('.map__checkbox:checked');
   let count = 0;
   checkedFeatures.forEach((feature) => {
-    if (advert.offer.features.includes(feature.value))
+    if (advert.offer.features.includes(feature.value)) {
       count++;
-  })
+    }
+  });
 
   return count === checkedFeatures.length;
-}
+};
 
 const getFilteredAdvert = (data) => {
   return data.filter((advert) => {
